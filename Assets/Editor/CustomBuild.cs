@@ -1,23 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
-using UnityEngine;
 
-public static class CustomBuild
+public class CustomBuild
 {
-    public static void BuildAndroid()
+    public static void BuildAndroidStudioProject()
     {
-        BuildPlayerOptions options = new BuildPlayerOptions();
-
-        options.locationPathName = Application.dataPath;
-        options.options = BuildOptions.AcceptExternalModificationsToPlayer;
-        options.scenes = GetScenes();
-        options.target = BuildTarget.Android;
-        options.targetGroup = BuildTargetGroup.Android;
+        BuildPlayerOptions options = new BuildPlayerOptions
+        {
+            locationPathName = Environment.GetEnvironmentVariable("CI_ANDROID_STUDIO_BUILD_PATH"),
+            scenes = GetScenes(),
+            target = BuildTarget.Android,
+            options = BuildOptions.AcceptExternalModificationsToPlayer
+        };
         
         BuildPipeline.BuildPlayer(options);
     }
     
-    private static string[] GetScenes()
+    static string[] GetScenes()
     {
         var projectScenes = EditorBuildSettings.scenes;
         List<string> scenesToBuild = new List<string>();
